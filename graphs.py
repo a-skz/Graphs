@@ -162,7 +162,18 @@ class DirectedMatrixGraph(object):
     def get_loops(self):
         loops = [1 for l in range(len(self.g)) if self.g[l][l] == 1]
         return sum(loops)
-    
+
+    def transitive_closure(self):
+        a = [row for row in self.g]
+        n = len(a)
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if (a[i][j]==0):
+                        if (a[i][k]==1) and (a[k][j]==1):
+                            a[i][j] = 1
+        return a
+
     def to_string(self):
         head = '   '
         for i in range(len(self.g)):
@@ -170,6 +181,7 @@ class DirectedMatrixGraph(object):
         print(head)
         for i in range(len(self.g)):
             print(i, self.g[i])
+
 
 class UndirectedMatrixGraph(DirectedMatrixGraph):
     

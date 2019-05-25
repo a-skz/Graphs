@@ -1,8 +1,8 @@
 from graphs import Graph
 
-def directed_graph(rep, edges=[]):
+def directed_graph(rep, vertices, edges=[]):
     print("\nDirected ", rep, "Graph")
-    g = Graph.generate(9, rep=rep, dirc=True)
+    g = Graph.generate(vertices, rep=rep, dirc=True)
     for v,w in edges:
         g.add_edge(v, w)
     g.to_string()
@@ -16,10 +16,14 @@ def directed_graph(rep, edges=[]):
     for x in Graph.dfs_search(g): print(x)
     print("-- BFS Search --")
     for x in Graph.bfs_search(g): print(x)
+    if rep=='matrix':
+        print("-- Transitive Closure --")
+        a = g.transitive_closure()
+        for row in a: print(row)
 
-def undirected_graph(rep, edges=[]):
+def undirected_graph(rep, verticies, edges=[]):
     print("\nUndirected ", rep, "Graph")
-    g = Graph.generate(9, rep=rep, dirc=False)
+    g = Graph.generate(verticies, rep=rep, dirc=False)
     for v,w in edges:
         g.add_edge(v, w)
     g.to_string()
