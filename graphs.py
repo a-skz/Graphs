@@ -1,7 +1,7 @@
 class Graph(object):
     
-    @classmethod
-    def generate(cls, v, *, rep = 'list', dirc = False):
+    @staticmethod
+    def generate(v, *, rep = 'list', dirc = False):
         if dirc:
             if rep == 'list':
                 return DirectedListGraph(v)
