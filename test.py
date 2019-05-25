@@ -1,41 +1,63 @@
-from graphs import Graph
+import random
+from graph import GraphFactory, GraphSearch, UndirectedMatrixGraph
 
-def directed_graph(rep, vertices, edges=[]):
-    print("\nDirected ", rep, "Graph")
-    g = Graph.generate(vertices, rep=rep, dirc=True)
-    for v,w in edges:
-        g.add_edge(v, w)
-    g.to_string()
-    print('Number of vertices: ', g.get_vertices())
-    print('Number of edges: ', g.get_edges())
-    print('Adjacents of vertice 1: ', g.get_adjacent(1))
-    print('Order of vertice 1', g.get_order(1))
-    print('Maximum order: ', g.get_max_order())
-    print('Number of loops: ', g.get_loops())
-    print("-- DFS Search --")
-    for x in Graph.dfs_search(g): print(x)
-    print("-- BFS Search --")
-    for x in Graph.bfs_search(g): print(x)
-    if rep=='matrix':
-        print("-- Transitive Closure --")
-        a = g.transitive_closure()
-        for row in a: print(row)
+def test_graph(v, *, rep, dirc, edges):
+    print('Begin test')
+    G = GraphFactory.generate_graph(v, rep=rep, dirc=dirc)
+    test_general_graph(G, edges)
+    
+    if dirc:
+        test_directed_graph(G)
+    else:
+        test_undirected_graph(G)
+    
+    test_search_graph(G)
+    print('End test\n\n')
 
-def undirected_graph(rep, verticies, edges=[]):
-    print("\nUndirected ", rep, "Graph")
-    g = Graph.generate(verticies, rep=rep, dirc=False)
+def test_general_graph(G, edges):
+
     for v,w in edges:
-        g.add_edge(v, w)
-    g.to_string()
-    print('Number of vertices: ', g.get_vertices())
-    print('Number of edges: ', g.get_edges())
-    print('Adjacents of vertice 1: ', g.get_adjacent(1))
-    print('Order of vertice 1', g.get_order(1))
-    print('Maximum order: ', g.get_max_order())
-    print('Number of loops: ', g.get_loops())
-    print('Is eulerian? ', g.is_eulerian())
-    print('Has open eulerian path? ', g.has_open_eule_path())
+        G.add_edge(v, w)
+    G.to_string()
+    v = G.get_vertices()
+    print('Number of vertices: ', v)
+    i = random.randint(0, v-1)
+    print('Adjacents of vertice ', i, ':', G.get_adjacent(i))
+    l = G.get_loops()
+    print('Number of loops: ', l)
+
+def test_directed_graph(G):
+
+    v = G.get_vertices()
+    i = random.randint(0, v-1)
+    e = G.get_edges()
+    print('Number of edges: ', e)
+    print('Order of vertice ', i, ':', G.get_order(i))
+    max_o = G.get_max_order()
+    print('Maximum order: ', max_o)
+
+    if isinstance(G, UndirectedMatrixGraph):
+        c = G.get_transitive_closure()
+        print('Transitive Closure: ')
+        for row in c: print(row)
+
+def test_undirected_graph(G):
+
+    v = G.get_vertices()
+    i = random.randint(0, v-1)
+    e = G.get_edges()
+    print('Number of edges: ', e)
+    print('Order of vertice ', i, ':', G.get_order(i))
+    max_o = G.get_max_order()
+    print('Maximum order: ', max_o())
+    is_eule = G.is_eulerian()
+    print('Is eulerian? ', is_eule)
+    has_open_eule = G.has_open_eule_path()
+    print('Has open eulerian path? ', has_open_eule)
+
+
+def test_search_graph(G, s=0):
     print("-- DFS Search --")
-    for x in Graph.dfs_search(g): print(x)
+    for x in GraphSearch.get_dfs_search(G): print(x)
     print("-- BFS Search --")
-    for x in Graph.bfs_search(g): print(x)
+    for x in GraphSearch.get_bfs_search(G, s): print(x)
