@@ -44,7 +44,13 @@ class DirectedListGraph(ListGraph):
         o = list(zip(*o))
         in_o = sorted(o[0])
         out_o = sorted(o[1])
-        return (in_o[-1], out_o[-1])    
+        return (in_o[-1], out_o[-1])
+    
+    def get_topological_order(self):
+        t = GraphSearch.get_dfs_search(self)
+        t = sorted(t, key=lambda x: x['f'], reverse=True)
+        t = [{'v':x['v'], 'a':x['a']} for x in t]
+        return t
 
 
 class UndirectedListGraph(ListGraph):
@@ -125,8 +131,8 @@ class DirectedMatrixGraph(MatrixGraph):
 
     def add_edge(self, v, w):
         super().add_edge(v, w)
-        self.o[v]['in_o'] += 1
-        self.o[w]['out_o'] += 1
+        self.o[v]['out_o'] += 1
+        self.o[w]['in_o'] += 1
     
     def get_order(self, v):
         in_o = self.o[v]['in_o']
@@ -148,6 +154,12 @@ class DirectedMatrixGraph(MatrixGraph):
                         if (a[i][k]==1) and (a[k][j]==1):
                             a[i][j] = 1
         return a
+
+    def get_topological_order(self):
+        t = GraphSearch.get_dfs_search(self)
+        t = sorted(t, key=lambda x: x['f'], reverse=True)
+        t = [{'v':x['v'], 'a':x['a']} for x in t]
+        return t
 
 
 class UndirectedMatrixGraph(MatrixGraph):
@@ -188,12 +200,16 @@ class GraphSearch(object):
 
     @staticmethod
     def get_dfs_search(G):
-        g = [{'v':i, 'a':G.get_adjacent(i), 'c':'b', 'd':0,'f':0,'pi':None, 'id':None} for i in range(G.get_vertices())]
-        time = 0
+        s = [i for i in range(G.get_vertices())]
+        if isinstance(G.get_order(0), tuple):
+            s = sorted(s, key=lambda x: G.get_order(x)[0])
+        else:
+            s = sorted(s, key=lambda x: G.get_order(x))
+        g = [{'v':i, 'a':G.get_adjacent(i), 'c':'b', 'd':0, 'f':0, 'pi':None, 'id':None} for i in s]
         group = 0
         for v in g:
             if v['c'] == 'b':
-                time = GraphSearch.dfs_visit(v, g, time, group)
+                GraphSearch.dfs_visit(v, g, 0, group)
                 group += 1
         return g
 

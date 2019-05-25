@@ -10,7 +10,7 @@ def test_graph(v, *, rep, dirc, edges):
         test_directed_graph(G)
     else:
         test_undirected_graph(G)
-    
+
     test_search_graph(G)
     print('End test\n\n')
 
@@ -41,6 +41,10 @@ def test_directed_graph(G):
         print('Transitive Closure: ')
         for row in c: print(row)
 
+    print('Topological Order:')
+    t = G.get_topological_order()
+    for row in t: print(row)
+
 def test_undirected_graph(G):
 
     v = G.get_vertices()
@@ -49,7 +53,7 @@ def test_undirected_graph(G):
     print('Number of edges: ', e)
     print('Order of vertice ', i, ':', G.get_order(i))
     max_o = G.get_max_order()
-    print('Maximum order: ', max_o())
+    print('Maximum order: ', max_o)
     is_eule = G.is_eulerian()
     print('Is eulerian? ', is_eule)
     has_open_eule = G.has_open_eule_path()
