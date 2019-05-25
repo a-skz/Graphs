@@ -63,13 +63,13 @@ class Graph(object):
 class DirectedListGraph(object):
     
     def __init__(self, v):
-        self.g = [{'v':i, 'a':[], 'in_o':0, 'out_o':0} for i in range(v)]
+        self.g = {i:{'a':[], 'in_o':0, 'out_o':0, 'w':0} for i in range(v)}
         
     def get_vertices(self):
-        return len(self.g)
+        return len(self.g.keys())
     
     def get_edges(self):
-        A = [len(v['a']) for v in self.g]
+        A = [len(v['a']) for v in self.g.values()]
         return sum(A)
         
     def add_edge(self, v, w):
@@ -80,52 +80,52 @@ class DirectedListGraph(object):
     def get_adjacent(self, v):
         return self.g[v]['a']
     
-    def get_order(self,v):
+    def get_order(self, v):
         return (self.g[v]['in_o'], self.g[v]['out_o'])
     
     def get_max_order(self):
-        in_o = sorted(self.g, key=lambda x: x['in_o'])
-        out_o = sorted(self.g, key=lambda x: x['out_o'])
+        in_o = sorted(self.g.values(), key=lambda x: x['in_o'])
+        out_o = sorted(self.g.values(), key=lambda x: x['out_o'])
         return (in_o[-1]['in_o'], out_o[-1]['out_o'])
     
     def get_loops(self):
-        loops = [1 for v in self.g if v['v'] in v['a']]
+        loops = [1 for v in self.g.keys() if v in self.g[v]['a']]
         return sum(loops)
     
     def to_string(self):
-        for v in self.g:
-            print(v)
+        for vertice, attributes in self.g.items():
+            print(vertice, ':', attributes)
 
 class UndirectedListGraph(DirectedListGraph):
     
     def __init__(self, v):
         super().__init__(v)
-        self.g = [{'v':i, 'a':[], 'g':0} for i in range(v)]
+        self.g = {i:{'a':[], 'o':0, 'w':0} for i in range(v)}
     
     def get_edges(self):
-        A = [len(v['a']) for v in self.g]
+        A = [len(v['a']) for v in self.g.values()]
         return sum(A)/2
     
     def add_edge(self, v, w):
         self.g[v]['a'].append(w)
-        self.g[v]['g'] += 1
+        self.g[v]['o'] += 1
         self.g[w]['a'].append(v)
-        self.g[w]['g'] += 1
+        self.g[w]['o'] += 1
     
     def get_order(self,v):
-        return self.g[v]['g']
+        return self.g[v]['o']
     
     def get_max_order(self):
-        g = sorted(self.g, key=lambda x: x['g'])
-        return g[-1]['g']
+        g = sorted(self.g.values(), key=lambda x: x['o'])
+        return g[-1]['o']
     
     def is_eulerian(self):
-        for v in self.g:
-            if (v['g']%2 != 0): return False
+        for v in self.g.values():
+            if (v['o']%2 != 0): return False
         return True
     
     def has_open_eule_path(self):
-        odd = [1 for v in self.g if v['g']%2 != 0]
+        odd = [1 for v in self.g.values() if v['o']%2 != 0]
         if len(odd) > 2:
             return False
         return True
