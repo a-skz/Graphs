@@ -1,18 +1,15 @@
-import test
+from graph_list import DirectedListGraph
+from graph_matrix import DirectedMatrixGraph
+from graph_utilities import GraphSearch
+from network_flow import NetworkFlow
 
-edges = [(0,1), (1,2), (1,4), (2,0), (2,3), (4,5), (5,1),
-         (5,2), (5,3), (6,1), (6,4), (6,7), (7,6), (8,7)]
-for rep in ['list', 'matrix']:
-    test.test_graph(9, rep=rep, dirc=True, edges=edges)
+v=6
+e = [(0,1,16),(0,2,13),(1,2,10),(1,3,12),(2,1,4),(2,4,14),(3,2,9),(3,5,20),(4,3,7),(4,5,4)]
+# e = [(0,1,10),(0,2,10),(1,2,2),(1,3,4),(1,4,8),(2,4,9),(3,5,10),(4,3,6),(4,5,10)]
+# g = DirectedListGraph(v)
+g = DirectedMatrixGraph(v)
+for a,b,weight in e: g.add_edge(a,b,weight)
 
-edges = [(0,1),(0,2),(1,2),(1,3),(2,3),(2,4)]
-for rep in ['list', 'matrix']:
-    test.test_graph(5, rep=rep, dirc=True, edges=edges)
-
-edges = [(0,1), (1,2), (2,3)]
-for rep in ['matrix']:
-    test.test_graph(4, rep=rep, dirc=True, edges=edges)
-
-edges = [(0,1), (0,2), (0,3), (1,3), (2,3), (3,4)]
-for rep in ['list', 'matrix']:
-    test.test_graph(5, rep=rep, dirc=False, edges=edges)
+n = NetworkFlow(g)
+max_flow = n.maximum_flow(0,5)
+print(max_flow)
